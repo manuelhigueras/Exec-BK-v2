@@ -12,7 +12,10 @@ import com.mybank.domain.SavingsAccount;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import static java.lang.System.out;
 import java.util.Scanner;
 
 /**
@@ -47,8 +50,60 @@ public class DataSource {
         }  
     }
     
-    public void WriteData(){
-        
+    public void writeData() throws IOException {
+        //ESCRIBIR EN EL FICHERO
+        Scanner sc = new Scanner(System.in);
+        PrintWriter out = null;
+        Customer customer;
+        float initBalance;
+        String firstName, lastName, numOfCustomersParse;
+        numOfCustomersParse = sc.nextLine();
+        int numOfCustomers = Integer.parseInt(numOfCustomersParse);
+        try{
+            //NOMBRE Y APELLIDO
+            out = new PrintWriter(this.archivo);
+            firstName = sc.nextLine();
+            lastName = sc.nextLine();
+            out.println(numOfCustomers);
+            out.println(""+firstName);
+            out.println(""+lastName);
+            //Escribiendo en el fichero
+            out.close();
+        }
+        catch(IOException e){
+            System.out.println("No se ha podido escribir");
+        }
+        finally{     
+            if(out != null)
+                out.close();
+        }
+//        FileWriter fw = null;
+//        PrintWriter out = null;
+//        try {
+//            fw = new FileWriter(fichero);
+//            out = new PrintWriter(fw);
+//            out.println("Esto es una linea");
+//            out.println("Esto es otra linea");
+//            //Escribiendo en el fichero
+////            fw.write("Cuenta - Tipo de Cuenta - Persona");
+////            fw.write("1 - AHORRO - Manuel Higueras");
+////            fw.append("\n");
+////            fw.write("2 - DEBITO - Luis Ponte");
+////            fw.write("3 - AHORRO - Paco Quesada");
+////            fw.write("4 - AHORRO - Roni Loz");
+////            fw.append('1');
+////            fw.close();
+//            out.close();
+//        }
+//        catch(IOException e){
+//            System.out.println("No se ha podido escribir");
+//        }
+//        finally {
+//            if(fw != null) 
+//                fw.close();
+//            if(out != null) 
+//                out.close();
+//        }
     }
     
 //    public void loadData() throws IOException {// Variables de fuente de datosScanner 
@@ -99,6 +154,47 @@ public class DataSource {
         }
     }
     
-    
+/*
+    public void writeData() throws IOException {
+    //ESCRIBIR EN EL FICHERO
+    Scanner sc = new Scanner(System.in);
+    PrintWriter out = null;
+    Customer customer;
+    float initBalance;
+    String firstName, lastName, numOfCustomersParse, numOfAccountsParse;
+    numOfCustomersParse = sc.nextLine();
+    int numOfCustomers = Integer.parseInt(numOfCustomersParse);
+    try{
+        //NOMBRE Y APELLIDO
+        out = new PrintWriter(this.archivo);
+        out.println(numOfCustomers);
+        for ( int idx = 0; idx < numOfCustomers; idx++ ) {// Crear objeto de cliente
+          firstName = sc.nextLine();
+          lastName = sc.nextLine();
+          out.println(""+firstName);
+          out.println(""+lastName);
+          Bank.addCustomer(firstName, lastName);
+          customer = Bank.getCustomer(idx);
+          numOfAccountsParse = sc.nextLine();
+          int numOfAccounts = Integer.parseInt(numOfAccountsParse);
+          while ( numOfAccounts-- > 0 ) {
+            char accountType = sc.nextLine().charAt(0);
+            switch ( accountType ) {// Cuenta de ahorro
+              case 'S':
+              {
+                  
+              }
+              break;
+          //Escribiendo en el fichero
+        out.close();
+    }
+    catch(IOException e){
+        System.out.println("No se ha podido escribir");
+    }
+    finally{     
+        if(out != null)
+            out.close();
+    }    
+*/
     
 }

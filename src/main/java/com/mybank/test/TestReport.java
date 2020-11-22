@@ -42,7 +42,8 @@ public class TestReport {
         
         DataSource file = new DataSource("src/main/java/com/mybank/data/");
         file.existData();
-        file.loadData();
+        file.writeData();
+        //file.loadDataV2();
         
     }
 }
