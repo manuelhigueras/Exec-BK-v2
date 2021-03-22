@@ -18,7 +18,7 @@ public class TestReport {
     private static void initializeCustomers() throws IOException {
         Customer customer;
         
-        // Create several customers and their accounts
+////         Create several customers and their accounts
 //        Bank.addCustomer("Jane", "Simms");
 //        customer = Bank.getCustomer(0);
 //        customer.addAccount(new SavingsAccount(500.00, 0.05));
@@ -39,11 +39,25 @@ public class TestReport {
 ////         Maria and Tim have a shared checking account
 //        customer.addAccount(Bank.getCustomer(2).getAccount(1));
 //        customer.addAccount(new SavingsAccount(150.00, 0.05));
-        
-        DataSource file = new DataSource("src/main/java/com/mybank/data/");
-        file.existData();
-        file.writeData();
-        //file.loadDataV2();
+//        
+        //DataSource file = new DataSource("src/main/java/com/mybank/data/");
+        //file.existData();
+        //file.writeData();
+        //file.loadDataV3();
+        try {
+            //System.out.println("Reading data file: " + dataFilePath);
+            // Create the data source and load the Bank data
+            DataSource file = new DataSource("src/main/java/com/mybank/data/");
+            file.loadDataV3();
+
+            // Run the customer report
+            //CustomerReport report = new CustomerReport();
+            //report.generateReport();
+        } catch (IOException ioe) {
+            System.out.println("Could not load the data file.");
+            System.out.println(ioe.getMessage());
+            ioe.printStackTrace(System.err);
+        }
         
     }
 }

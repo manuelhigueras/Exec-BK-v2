@@ -1,0 +1,17 @@
+4
+
+Manuel	Higueras	2
+s	2000.0	0.005
+s	1500.0	0.15
+
+Luis Ponte	Artunduaga	1
+C	4000.0	100.0
+
+Francisco Bolet	Antoni de Seats	2
+S	7650.0	0.25
+S	3000.0	0.35
+
+Patricio Estrella	De Leon Sevillano	3
+S	5500.0	0.25
+S	4501.0	0.15
+C	5124.0	30.0

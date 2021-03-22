@@ -5,6 +5,7 @@
  */
 package com.mybank.data;
 
+import com.mybank.domain.Account;
 import com.mybank.domain.Bank;
 import com.mybank.domain.CheckingAccount;
 import com.mybank.domain.Customer;
@@ -16,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.System.out;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -26,15 +28,6 @@ public class DataSource {
     private File archivo = null; 
     private String url = "src/main/java/com/mybank/data/test.dat";
     private final String NAME = "test2.txt";
-
-//    static {
-//        archivo = null;
-//    }
-    
-    //Version 2
-//    public DataSource(String dataFilePath) {
-//        this.archivo = new File(dataFilePath);
-//    }
     
     public DataSource(String dataFilePath2){
         this.archivo = new File(dataFilePath2, NAME);
@@ -55,89 +48,129 @@ public class DataSource {
         Scanner sc = new Scanner(System.in);
         PrintWriter out = null;
         Customer customer;
-        float initBalance;
-        String firstName, lastName, numOfCustomersParse;
+        float initBalance, interestRate, overdraftProtection;
+        String firstName, lastName, numOfCustomersParse, numOfAccountsParse;
+        String initBalanceParse, interestRateParse, overdraftProtectionParse;
         numOfCustomersParse = sc.nextLine();
         int numOfCustomers = Integer.parseInt(numOfCustomersParse);
         try{
             //NOMBRE Y APELLIDO
             out = new PrintWriter(this.archivo);
-            firstName = sc.nextLine();
-            lastName = sc.nextLine();
             out.println(numOfCustomers);
-            out.println(""+firstName);
-            out.println(""+lastName);
-            //Escribiendo en el fichero
+            out.println("");
+            for ( int idx = 0; idx < numOfCustomers; idx++ ) {// Crear objeto de cliente
+              firstName = sc.nextLine();
+              lastName = sc.nextLine();
+              Bank.addCustomer(firstName, lastName);
+              customer = Bank.getCustomer(idx);
+              numOfAccountsParse = sc.nextLine();
+              int numOfAccounts = Integer.parseInt(numOfAccountsParse);
+              out.println(""+ firstName + "   " + lastName + "   " + numOfAccounts);
+              while ( numOfAccounts-- > 0 ) {
+                char accountType = sc.nextLine().charAt(0);
+                switch ( accountType ) {// Cuenta de ahorro
+                  case 'S':
+                    initBalanceParse = sc.nextLine();
+                    initBalance = Float.parseFloat(initBalanceParse);
+                    interestRateParse = sc.nextLine();
+                    interestRate = Float.parseFloat(interestRateParse) / 100;
+                    out.println("" + accountType + "    " + initBalance + "   " + interestRate);
+                    customer.addAccount(new SavingsAccount(initBalance,interestRate));
+                  break;
+                  case 'C':
+                    initBalanceParse = sc.nextLine();
+                    initBalance = Float.parseFloat(initBalanceParse);
+                    overdraftProtectionParse = sc.nextLine();
+                    overdraftProtection = Float.parseFloat(overdraftProtectionParse);
+                    out.println("" + accountType + "    " + initBalance + "   " + overdraftProtection);
+                    customer.addAccount(new CheckingAccount(initBalance,overdraftProtection));
+                  break;
+                  default:
+                    System.out.println("ERROR CON EL TIPO DE CUENTA");
+                }
+              }
+            }
+            //Cerrando el fichero
             out.close();
         }
         catch(IOException e){
             System.out.println("No se ha podido escribir");
         }
-        finally{     
+        finally{
             if(out != null)
                 out.close();
         }
-//        FileWriter fw = null;
-//        PrintWriter out = null;
-//        try {
-//            fw = new FileWriter(fichero);
-//            out = new PrintWriter(fw);
-//            out.println("Esto es una linea");
-//            out.println("Esto es otra linea");
-//            //Escribiendo en el fichero
-////            fw.write("Cuenta - Tipo de Cuenta - Persona");
-////            fw.write("1 - AHORRO - Manuel Higueras");
-////            fw.append("\n");
-////            fw.write("2 - DEBITO - Luis Ponte");
-////            fw.write("3 - AHORRO - Paco Quesada");
-////            fw.write("4 - AHORRO - Roni Loz");
-////            fw.append('1');
-////            fw.close();
-//            out.close();
-//        }
-//        catch(IOException e){
-//            System.out.println("No se ha podido escribir");
-//        }
-//        finally {
-//            if(fw != null) 
-//                fw.close();
-//            if(out != null) 
-//                out.close();
-//        }
+    }    
+    
+    public void loadData(){
+        FileReader fr = null;
+        try{
+            fr = new FileReader(this.archivo);
+            BufferedReader br = new BufferedReader(fr);
+            String linea = br.readLine();
+            
+            while(linea != null){
+                System.out.println(linea);
+                linea = br.readLine();
+            }
+        }
+        catch(IOException e){
+            System.out.println("No se ha podido leer " + e.getMessage());
+        }
     }
     
-//    public void loadData() throws IOException {// Variables de fuente de datosScanner 
-//            Scanner input = new Scanner(this.archivo);// Variables de dominio
-//            Customer customer;
-//            int numOfCustomers = input.nextInt();
-//            float initBalance;
-//            String firstName, lastName;
-//            for ( int idx = 0; idx < numOfCustomers; idx++ ) {// Crear objeto de cliente
-//                firstName = input.next();
-//                lastName = input.next();
-//                Bank.addCustomer(firstName, lastName);
-//                customer = Bank.getCustomer(idx);// Crear cuentas de cliente
-//                int numOfAccounts = input.nextInt();
-//                while ( numOfAccounts-- > 0 ) {// Crear un tipo de cuenta específico
-//                    char accountType = input.next().charAt(0);
-//                    switch ( accountType ) {// Cuenta de ahorro
-//                        case 'S':{
-//                            initBalance = input.nextFloat();
-//                        }
-//                        float interestRate = input.nextFloat();
-//                        customer.addAccount(new SavingsAccount(initBalance,interestRate));
-//                        break;
-//                        // Checking account
-//                        case 'C':{
-//                            initBalance = input.nextFloat();
-//                        }
-//                    float overdraftProtection = input.nextFloat();
-//                    customer.addAccount(new CheckingAccount(initBalance,overdraftProtection));
-//                    break;
-//                }
-//            } // FIN de cambio
-//       } // FIN de bucle de creación de cuentas
-//    }
+    public void loadDataV3() throws IOException{
+        FileReader fr = null;
+        BufferedReader br = null;
+        try{
+            fr = new FileReader(this.archivo);
+            br = new BufferedReader(fr);
+            //leo primera linea qeu me da un numero
+            String linea = br.readLine();
+            int numeroClientes = Integer.parseInt(linea);
+            System.out.printf("Total clientes %d \n", numeroClientes);
+            //leo linea en blanco
+            linea =  br.readLine();
+            for(int i = 0; i < numeroClientes; i++){
+                //leo datos cliente
+                linea = br.readLine();
+                // System.out.println(linea);
+                Scanner sc = new Scanner(linea);
+                String nom = sc.next();
+                String ap = sc.next();
+                String cuenta = sc.next();
+                int numeroCuentas = Integer.parseInt(cuenta);
+                Bank.addCustomer(nom, ap);
+                for(int j = 0; j < numeroCuentas; j++){
+                    //leer cuentas
+                    linea = br.readLine(); 
+                    Scanner sc2 = new Scanner(linea);
+                    sc2.useLocale(Locale.US);
+                    String tipo = sc2.next();
+                    double balance = sc2.nextDouble();
+                    double interes = sc2.nextDouble();
+                    break;
+//                    Account ac= null;
+//                    if( tipo.equals("S")){
+//                        //new SA
+//                        ac = new SavingsAccount(balance, interes);
+//                    }else{
+//                        // new CA
+//                        ac = new CheckingAccount(balance, interes);
+//                    }
+//                   Customer c =  Bank.getCustomer(Bank.getNumOfCustomers()-1);
+//                   c.addAccount(ac);
+                }//fin recorrer cuentas
+                linea = br.readLine(); 
+            }//fin recorrer clientes
+           // Scanner sc = new Scanner(linea)
+        }finally{
+           if(fr != null) fr.close();
+           if(br != null) br.close();
+        }
+           
+    }
+    
     public void loadDataV2(){
         FileReader fr = null;
         try{
@@ -153,48 +186,5 @@ public class DataSource {
             System.out.println("No se ha podido leer " + e.getMessage());
         }
     }
-    
-/*
-    public void writeData() throws IOException {
-    //ESCRIBIR EN EL FICHERO
-    Scanner sc = new Scanner(System.in);
-    PrintWriter out = null;
-    Customer customer;
-    float initBalance;
-    String firstName, lastName, numOfCustomersParse, numOfAccountsParse;
-    numOfCustomersParse = sc.nextLine();
-    int numOfCustomers = Integer.parseInt(numOfCustomersParse);
-    try{
-        //NOMBRE Y APELLIDO
-        out = new PrintWriter(this.archivo);
-        out.println(numOfCustomers);
-        for ( int idx = 0; idx < numOfCustomers; idx++ ) {// Crear objeto de cliente
-          firstName = sc.nextLine();
-          lastName = sc.nextLine();
-          out.println(""+firstName);
-          out.println(""+lastName);
-          Bank.addCustomer(firstName, lastName);
-          customer = Bank.getCustomer(idx);
-          numOfAccountsParse = sc.nextLine();
-          int numOfAccounts = Integer.parseInt(numOfAccountsParse);
-          while ( numOfAccounts-- > 0 ) {
-            char accountType = sc.nextLine().charAt(0);
-            switch ( accountType ) {// Cuenta de ahorro
-              case 'S':
-              {
-                  
-              }
-              break;
-          //Escribiendo en el fichero
-        out.close();
-    }
-    catch(IOException e){
-        System.out.println("No se ha podido escribir");
-    }
-    finally{     
-        if(out != null)
-            out.close();
-    }    
-*/
     
 }
